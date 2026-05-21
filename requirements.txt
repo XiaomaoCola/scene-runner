@@ -1,5 +1,9 @@
 numpy
 mss
 
+# 深度学习依赖
+torch
+torchvision
+
 # 私人工具包，直接从 GitHub 装
 window-finder @ git+https://github.com/XiaomaoCola/toolkit.git@main#subdirectory=libs/window_finder ; sys_platform == "win32"
