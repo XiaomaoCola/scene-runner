@@ -1,10 +1,4 @@
-"""
-测试 PrintWindowCapture：不管 BlueStacks 是否最小化，都能截到图。
-截图保存到 runs/debug_print_window/screenshot.png 并自动打开。
-
-运行方式（在 scene-runner 根目录）：
-    python tests/perception/debug_print_window_capture.py
-"""
+# 注意：对 BlueStacks 此方案截图为黑屏，原因见 src/scene_runner/perception/sources/gdi_capture.py 顶部。
 
 import os
 import sys
@@ -16,7 +10,7 @@ import cv2
 from scene_runner.perception.sources.gdi_capture import GdiCapture
 
 KEYWORD = "BlueStacks"
-OUT_DIR = Path(__file__).parent.parent / "runs" / "debug_print_window"
+OUT_DIR = Path(__file__).parents[3] / "runs" / "gdi_capture"
 
 
 def main():

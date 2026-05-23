@@ -1,3 +1,7 @@
+# 本技术对 BlueStacks 实现失败：BlueStacks 使用 DirectX 硬件加速渲染，GDI PrintWindow 拿到的是黑屏。
+# 作为备用方案保留：对使用 GDI 渲染的普通 Windows 桌面应用（记事本、文件管理器等）可正常工作，
+# 且支持窗口最小化或被遮挡时截图，是 mss 方案无法覆盖此场景时的补充。
+
 from __future__ import annotations
 
 import ctypes
