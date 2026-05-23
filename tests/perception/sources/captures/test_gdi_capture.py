@@ -1,4 +1,4 @@
-# 注意：对 BlueStacks 此方案截图为黑屏，原因见 src/scene_runner/perception/sources/gdi_capture.py 顶部。
+# 注意：对 BlueStacks 此方案截图为黑屏，原因见 src/scene_runner/perception/sources/test_gdi_capture.py 顶部。
 
 import os
 import sys

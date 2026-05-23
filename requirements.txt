@@ -2,6 +2,7 @@ numpy
 mss
 opencv-python
 pyyaml
+pytest
 
 # 深度学习依赖
 torch

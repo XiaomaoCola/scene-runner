@@ -1,5 +1,5 @@
 # 运行方式（在 scene-runner 根目录）：
-#     python tests/perception/sources/adb_capture.py
+#     python tests/perception/sources/test_adb_capture.py
 #
 # 前置条件：BlueStacks 已启动，ADB 已连接：
 #     "C:\Program Files\BlueStacks_nxt\HD-Adb.exe" connect 127.0.0.1:5555
