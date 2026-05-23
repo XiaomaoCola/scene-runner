@@ -14,7 +14,7 @@ _PW_CLIENTONLY = 1
 _PW_RENDERFULLCONTENT = 2  # 捕获 DirectX/硬件加速内容（BlueStacks 必须）
 
 
-class PrintWindowCapture(FrameSource):
+class GdiCapture(FrameSource):
     """
     通过 Win32 PrintWindow API 截取指定窗口的客户区。
 

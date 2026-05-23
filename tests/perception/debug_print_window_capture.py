@@ -13,7 +13,7 @@ from pathlib import Path
 
 import cv2
 
-from scene_runner.perception.sources.print_window_capture import PrintWindowCapture
+from scene_runner.perception.sources.gdi_capture import GdiCapture
 
 KEYWORD = "BlueStacks"
 OUT_DIR = Path(__file__).parent.parent / "runs" / "debug_print_window"
@@ -24,7 +24,7 @@ def main():
     out_path = OUT_DIR / "screenshot.png"
 
     print(f"[1/3] 搜索窗口关键词: {KEYWORD!r}  (包含最小化窗口)")
-    capture = PrintWindowCapture(window_keyword=KEYWORD, fps_limit=1.0)
+    capture = GdiCapture(window_keyword=KEYWORD, fps_limit=1.0)
 
     # fps_limit=1 时第一次 read() 会直接返回帧，不需要等待
     frame = capture.read()

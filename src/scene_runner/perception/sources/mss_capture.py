@@ -5,7 +5,7 @@ import numpy as np
 import time
 
 
-class WindowCapture(FrameSource):
+class MssCapture(FrameSource):
     def __init__(self, *, window_keyword: str, geometry: WindowGeometryProvider, fps_limit: float = 30.0) -> None:
         self.window_keyword = window_keyword
         self.geometry = geometry
