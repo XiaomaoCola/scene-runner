@@ -11,7 +11,7 @@ from pathlib import Path
 
 import cv2
 
-from scene_runner.perception.sources.adb_capture import AdbCapture
+from scene_runner.perception.sources.captures.adb_capture import AdbCapture
 
 OUT_DIR = Path(__file__).parents[3] / "runs" / "adb_capture"
 

@@ -7,7 +7,7 @@ from pathlib import Path
 
 import cv2
 
-from scene_runner.perception.sources.gdi_capture import GdiCapture
+from scene_runner.perception.sources.captures.gdi_capture import GdiCapture
 
 KEYWORD = "BlueStacks"
 OUT_DIR = Path(__file__).parents[3] / "runs" / "gdi_capture"
