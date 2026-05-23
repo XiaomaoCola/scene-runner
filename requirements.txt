@@ -1,5 +1,6 @@
 numpy
 mss
+opencv-python
 
 # 深度学习依赖
 torch
