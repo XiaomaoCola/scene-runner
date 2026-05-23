@@ -26,7 +26,7 @@ class AdbCapture(FrameSource):
         self,
         *,
         adb_path: str = _DEFAULT_ADB,
-        device: str = _DEFAULT_DEVICE,
+        device: str = _DEFAULT_DEVICE,  # 多设备时每个实例传不同地址，实例之间互相独立
         fps_limit: float = 3.0,
     ) -> None:
         self._adb = adb_path
