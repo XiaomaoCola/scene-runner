@@ -42,30 +42,3 @@ class FrameSource(ABC):
         raise NotImplementedError
 
 
-class ScreenCapture(FrameSource):
-    """
-    占位用的，随时可删。
-    """
-
-    def __init__(self, fps_limit: float = 30.0) -> None:
-        self._min_interval = 1.0 / fps_limit
-        self._last_ts = 0.0
-
-    def read(self) -> Optional[np.ndarray]:
-        now = time.time()
-        if now - self._last_ts < self._min_interval:
-            return None
-
-        self._last_ts = now
-
-        # NOTE:
-        # Here we intentionally do NOT bind to a concrete backend.
-        # In project, may plug in:
-        # - mss
-        # - win32 BitBlt
-        # - dxcam
-        #
-        # For now, we raise to force explicit implementation.
-        raise NotImplementedError(
-            "ScreenCapture.read() backend not implemented yet."
-        )

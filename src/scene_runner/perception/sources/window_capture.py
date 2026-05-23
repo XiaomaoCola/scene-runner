@@ -1,5 +1,5 @@
 from scene_runner.perception.geometry import WindowGeometryProvider
-from scene_runner.perception.capture import FrameSource
+from scene_runner.perception.sources.capture import FrameSource
 import mss
 import numpy as np
 import time

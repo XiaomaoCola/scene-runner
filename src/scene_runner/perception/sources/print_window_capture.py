@@ -7,7 +7,7 @@ import numpy as np
 import win32gui
 import win32ui
 
-from scene_runner.perception.capture import FrameSource
+from scene_runner.perception.sources.capture import FrameSource
 
 # PrintWindow flags
 _PW_CLIENTONLY = 1
