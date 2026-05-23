@@ -1,0 +1,6 @@
+attack:
+  type: rect
+  left: 0.00
+  top: 0.75
+  right: 0.15
+  bottom: 1.00

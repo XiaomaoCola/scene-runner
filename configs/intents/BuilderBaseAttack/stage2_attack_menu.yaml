@@ -1,0 +1,13 @@
+attack:
+  type: rect
+  left: 0.00
+  top: 0.75
+  right: 0.15
+  bottom: 1.00
+
+find_match:
+  type: rect
+  left: 0.70
+  top: 0.80
+  right: 0.98
+  bottom: 0.98
