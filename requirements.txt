@@ -1,6 +1,7 @@
 numpy
 mss
 opencv-python
+pyyaml
 
 # 深度学习依赖
 torch
