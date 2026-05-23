@@ -13,11 +13,10 @@ Scene / UI recognition
 Confidence estimation
 """
 
-from scene_runner.perception.sources.capture import FrameSource, ScreenCapture
+from scene_runner.perception.sources.capture import FrameSource
 from .scene_classifier import SceneClassifier
 
 __all__ = [
     "FrameSource",
-    "ScreenCapture",
     "SceneClassifier",
 ]
