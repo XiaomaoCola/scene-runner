@@ -1,3 +1,14 @@
+# 该工具通过 ADB 截取当前设备全屏，并以时间戳命名保存到 data/scratch/full_screen/。
+#
+# 用法：
+#   1. 确保 ADB 设备已连接（adb devices 可见设备）
+#   2. 运行：python tools/captures/adb_capture_fullscreen.py
+#   3. 截图保存到 data/scratch/full_screen/screen_<YYYYMMDD_HHMMSS>.png
+#
+# 典型用途：为 normalize_coords.py 或 makesense.ai 提供原始截图素材
+#
+# 依赖：AdbCapture（需 adb 环境）、opencv-python
+
 import sys
 import time
 from datetime import datetime

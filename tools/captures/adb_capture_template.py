@@ -1,3 +1,15 @@
+# 该工具根据 YAML 配置文件里定义的区域，从 ADB 截图中批量裁剪模板图片。
+#
+# 用法：
+#   1. 修改 YAML_PATH，指向目标 intent 的配置文件（configs/intents/.../*.yaml）
+#   2. 确保 ADB 设备已连接（adb devices 可见设备）
+#   3. 将游戏画面切换到 YAML 对应的场景
+#   4. 运行：python tools/captures/adb_capture_template.py
+#   5. 裁剪结果输出到 data/scratch/templates/，文件名格式：<yaml文件名>_<region名>_region.png
+#   6. 确认图片可用后，手动复制到 data/templates/ 归档
+#
+# 依赖：AdbCapture（需 adb 环境）、opencv-python、pyyaml
+
 import sys
 import time
 from pathlib import Path
