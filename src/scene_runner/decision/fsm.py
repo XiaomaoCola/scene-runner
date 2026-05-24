@@ -2,24 +2,22 @@ from __future__ import annotations
 
 import numpy as np
 
-from scene_runner.decision.states.builder_base_attack import BuilderBaseAttackFsm
+from scene_runner.decision.states.builder_base_attack import BuilderBaseFsm
 
 
 class Fsm:
     """
-    顶层决策协调器：将当前帧分发给各子状态机，返回第一个非 None 的 Intent。
+    顶层决策协调器：将当前帧 分析一下， 看看现在在 homevillage 还是在 builderbase 。
 
-    后面的计划是，顶层状态机负责判定目前村庄状态，就是world model里面那些村庄属性，
-    比如判断出现在在homevillage里，并且资源不足，就开始打架，分发任务给子状态机。
+    后面的计划是，顶层状态机负责识别目前村庄状态，就是world model里面那些村庄属性，
+    比如判断出现在在 homevillage 里 ，把村庄数据给 子fsm ， 让子 fsm 分析下面要干什么，
+    也就是输出 intent 。
     """
 
     def __init__(self) -> None:
-        self._bb_attack = BuilderBaseAttackFsm()
+        self._bb_attack = BuilderBaseFsm()
 
     def decide(self, frame_rgb: np.ndarray):
         # 留白：判定为在 BuilderBase，未来做模板匹配判断世界
         return self._bb_attack.step()
 
-    def advance(self) -> None:
-        """执行层完成动作后调用，通知子状态机推进状态。"""
-        self._bb_attack.advance()
