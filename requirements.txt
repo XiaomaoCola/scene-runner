@@ -3,6 +3,7 @@ mss
 opencv-python
 pyyaml
 pytest
+transitions
 
 # 深度学习依赖
 torch
