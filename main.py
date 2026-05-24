@@ -2,7 +2,7 @@ import time
 
 from scene_runner.perception.sources.captures.adb_capture import AdbCapture
 from scene_runner.decision.fsm import Fsm
-from scene_runner.actuation.planner import Planner
+from scene_runner.planning.planner import Planner
 from scene_runner.actuation.executor import Executor
 
 
@@ -29,10 +29,9 @@ def main() -> None:
 
     print("[3/3] 执行中...")
     if intent:
-        region = planner.plan(frame, intent)
+        region = planner.step(frame, intent)
         if region:
             executor.execute(region)
-            fsm.advance()
         else:
             print("[planner] 未找到目标元素，跳过")
 
