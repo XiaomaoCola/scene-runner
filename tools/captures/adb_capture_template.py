@@ -5,13 +5,16 @@ from pathlib import Path
 import cv2
 import yaml
 
-ROOT = Path(__file__).parent.parent
+ROOT = Path(__file__).parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 
 from scene_runner.perception.sources.captures.adb_capture import AdbCapture
 
-YAML_PATH = ROOT / "configs/intents/BuilderBaseAttack/stage1_builder_base.yaml"
-OUT_DIR   = ROOT / "configs/templates/builder_base/base"
+# ── 改这里 ──────────────────────────────────────────────────────────────────
+YAML_PATH = ROOT / "configs/intents/BuilderBaseAttack/stage2_attack_menu.yaml"
+OUT_DIR   = ROOT / "data/scratch/templates"
+# ────────────────────────────────────────────────────────────────────────────
+# 产出先进 scratch，确认图片可用后手动复制到 data/templates/ 归档
 
 
 def main() -> None:
@@ -33,10 +36,11 @@ def main() -> None:
     h, w = frame.shape[:2]
     print(f"[2/3] 全屏尺寸 {w}x{h}，开始裁剪...")
 
-    for name, elem in config.items():
+    yaml_stem = YAML_PATH.stem
+    for region_name, elem in config.items():
         x1, y1, x2, y2 = elem["left"], elem["top"], elem["right"], elem["bottom"]
         crop = frame[int(y1 * h):int(y2 * h), int(x1 * w):int(x2 * w)]
-        out_path = OUT_DIR / f"{name}.png"
+        out_path = OUT_DIR / f"{yaml_stem}_{region_name}_region.png"
         cv2.imwrite(str(out_path), crop[:, :, ::-1])
         print(f"  saved: {out_path}  ({crop.shape[1]}x{crop.shape[0]})")
 
@@ -45,4 +49,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
