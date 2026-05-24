@@ -2,12 +2,14 @@ import time
 
 from scene_runner.perception.sources.captures.adb_capture import AdbCapture
 from scene_runner.decision.fsm import Fsm
+from scene_runner.actuation.planner import Planner
 from scene_runner.actuation.executor import Executor
 
 
 def main() -> None:
     capture = AdbCapture()
     fsm = Fsm()
+    planner = Planner()
 
     print("[1/3] 截图中...")
     frame = capture.read()
@@ -27,7 +29,12 @@ def main() -> None:
 
     print("[3/3] 执行中...")
     if intent:
-        executor.execute(intent)
+        region = planner.plan(frame, intent)
+        if region:
+            executor.execute(region)
+            fsm.advance()
+        else:
+            print("[planner] 未找到目标元素，跳过")
 
 
 if __name__ == "__main__":

@@ -15,10 +15,8 @@ class Executor:
         self._adb = adb_path
         self._device = device
 
-    def execute(self, intent) -> None:
-        if not hasattr(intent, "region"):
-            return
-        self._tap_center(intent.region)
+    def execute(self, region: tuple[float, float, float, float]) -> None:
+        self._tap_center(region)
 
     def _tap_center(self, region: tuple[float, float, float, float]) -> None:
         x1, y1, x2, y2 = region
