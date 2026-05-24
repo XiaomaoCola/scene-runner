@@ -7,7 +7,7 @@ attack:
 
 find_match:
   type: rect
-  left: 0.70
-  top: 0.80
-  right: 0.98
-  bottom: 0.98
+  left: 0.6385
+  top: 0.587
+  right: 0.8438
+  bottom: 0.7296
