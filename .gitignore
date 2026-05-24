@@ -42,6 +42,11 @@ htmlcov/
 *.pth
 *.onnx
 
+# 外部数据（通过 Google Drive 同步，说明文档除外）
+data/**
+!data/**/
+!data/**/*.md
+
 # 运行时输出
 runs/frames/*
 runs/logs/*
