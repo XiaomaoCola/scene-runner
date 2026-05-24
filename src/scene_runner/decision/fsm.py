@@ -1,31 +1,25 @@
 from __future__ import annotations
 
-from pathlib import Path
-
 import numpy as np
 
-from scene_runner.decision.template_matcher import TemplateMatcher
-from scene_runner.intents.builder_base_attack import BuilderBaseAttackIntent
-
-_ROOT = Path(__file__).parents[3]  # scene-runner 项目根目录
+from scene_runner.decision.states.builder_base_attack import BuilderBaseAttackFsm
 
 
 class Fsm:
     """
-    判断当前场景，决定输出哪个 Intent。
+    顶层决策协调器：将当前帧分发给各子状态机，返回第一个非 None 的 Intent。
+
+    后面的计划是，顶层状态机负责判定目前村庄状态，就是world model里面那些村庄属性，
+    比如判断出现在在homevillage里，并且资源不足，就开始打架，分发任务给子状态机。
     """
 
     def __init__(self) -> None:
-        self._builder_base_village = TemplateMatcher(
-            template_path=_ROOT / "configs/templates/builder_base/base/attack.png",
-            region=(0.00, 0.75, 0.15, 1.00),
-        )
+        self._bb_attack = BuilderBaseAttackFsm()
 
     def decide(self, frame_rgb: np.ndarray):
-        score = self._builder_base_village.score(frame_rgb)
-        print(f"[fsm] builder_base_village score = {score:.3f}")
+        # 留白：判定为在 BuilderBase，未来做模板匹配判断世界
+        return self._bb_attack.step()
 
-        if self._builder_base_village.is_match(frame_rgb):
-            return BuilderBaseAttackIntent()
-
-        return None
+    def advance(self) -> None:
+        """执行层完成动作后调用，通知子状态机推进状态。"""
+        self._bb_attack.advance()
