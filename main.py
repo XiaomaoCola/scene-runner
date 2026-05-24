@@ -5,35 +5,50 @@ from scene_runner.decision.fsm import Fsm
 from scene_runner.planning.planner import Planner
 from scene_runner.actuation.executor import Executor
 
+_LOOP_INTERVAL = 0.5  # 每帧间隔（秒）
+
 
 def main() -> None:
     capture = AdbCapture()
     fsm = Fsm()
     planner = Planner()
 
-    print("[1/3] 截图中...")
+    # 先截一帧，用于初始化 Executor 的屏幕尺寸
+    print("[init] 初始化截图...")
     frame = capture.read()
     if frame is None:
         time.sleep(1.1)
         frame = capture.read()
     if frame is None:
-        print("ERROR: ADB 截图失败")
+        print("ERROR: ADB 截图失败，退出")
         return
 
     h, w = frame.shape[:2]
     executor = Executor(screen_size=(w, h))
+    print(f"[init] 屏幕尺寸 {w}x{h}，开始主循环")
 
-    print("[2/3] 决策中...")
-    intent = fsm.decide(frame)
-    print(f"      intent = {intent}")
+    while True:
+        frame = capture.read()
+        if frame is None:
+            print("WARN: 截图失败，跳过本帧")
+            time.sleep(_LOOP_INTERVAL)
+            continue
 
-    print("[3/3] 执行中...")
-    if intent:
-        region = planner.step(frame, intent)
+        intent = fsm.decide(frame)
+        if intent is None:
+            time.sleep(_LOOP_INTERVAL)
+            continue
+
+        try:
+            region = planner.step(frame, intent)
+        except NotImplementedError as e:
+            print(f"[main] {e}")
+            break
+
         if region:
             executor.execute(region)
-        else:
-            print("[planner] 未找到目标元素，跳过")
+
+        time.sleep(_LOOP_INTERVAL)
 
 
 if __name__ == "__main__":
