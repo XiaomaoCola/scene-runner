@@ -5,7 +5,7 @@ from scene_runner.decision.fsm import Fsm
 from scene_runner.planning.planner import Planner
 from scene_runner.actuation.executor import Executor
 
-_LOOP_INTERVAL = 0.5  # 每帧间隔（秒）
+_LOOP_INTERVAL = 3  # 每帧间隔（秒）
 
 
 def main() -> None:

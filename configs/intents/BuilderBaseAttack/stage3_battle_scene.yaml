@@ -1,0 +1,13 @@
+troop_bar:
+  type: rect
+  left: 0.0
+  top: 0.8056
+  right: 1.0
+  bottom: 1.0
+
+# night_witch:
+#   type: rect
+#   left: 0.1578
+#   top: 0.8657
+#   right: 0.2214
+#   bottom: 0.9204
