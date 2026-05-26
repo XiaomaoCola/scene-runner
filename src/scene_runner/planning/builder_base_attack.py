@@ -6,7 +6,7 @@ from pathlib import Path
 import numpy as np
 from transitions import Machine
 
-from scene_runner.actuation.actions import Action, TapAction, SwipeAction
+from scene_runner.actuation.actions import Action, TapAction, SwipeAction, SleepAction
 from scene_runner.decision.template_matcher import TemplateMatcher
 
 _ROOT = Path(__file__).parents[3]
@@ -53,7 +53,7 @@ class BuilderBaseAttackPlan:
             ),
         }
 
-    def step(self, frame_rgb: np.ndarray) -> Action | None:
+    def step(self, frame_rgb: np.ndarray) -> list[Action] | None:
         matcher = self._matchers.get(self.state)
         if matcher is None:
             raise NotImplementedError(f"[bb_plan|{self.state.name}] 暂无模板，终止循环")
@@ -66,14 +66,20 @@ class BuilderBaseAttackPlan:
 
         if self.state == Stage.VILLAGE:
             self.to_attack_menu()
-            return TapAction(region=(0.00, 0.75, 0.15, 1.00))
+            return [TapAction(region=(0.00, 0.75, 0.15, 1.00))]
 
         if self.state == Stage.ATTACK_MENU:
             self.to_battle_scene()
-            return TapAction(region=(0.6385, 0.587, 0.8438, 0.7296))
+            return [TapAction(region=(0.6385, 0.587, 0.8438, 0.7296))]
 
         if self.state == Stage.BATTLE_SCENE:
             self.to_surrender_confirm()
-            return SwipeAction(from_position=(0.5, 0.8), to_position=(0.05, 0.05), duration_ms=1500)
+            return [
+                SwipeAction(from_position=(0.5, 0.8), to_position=(0.05, 0.05), duration_milliseconds=1500),
+                SleepAction(duration_seconds=1.5),
+                TapAction(region=(0.1578, 0.8657, 0.2214, 0.9204)),   # night_witch
+                SleepAction(duration_seconds=0.5),
+                TapAction(region=(0.3385, 0.6296, 0.3542, 0.6389)),   # deployment_zone
+            ]
 
         return None

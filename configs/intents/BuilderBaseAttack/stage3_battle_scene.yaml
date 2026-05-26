@@ -5,9 +5,16 @@ troop_bar:
   right: 1.0
   bottom: 1.0
 
-# night_witch:
-#   type: rect
-#   left: 0.1578
-#   top: 0.8657
-#   right: 0.2214
-#   bottom: 0.9204
+night_witch:
+  type: rect
+  left: 0.1578
+  top: 0.8657
+  right: 0.2214
+  bottom: 0.9204
+
+deployment_zone:
+  type: rect
+  left: 0.3385
+  top: 0.6296
+  right: 0.3542
+  bottom: 0.6389

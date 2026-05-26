@@ -40,13 +40,13 @@ def main() -> None:
             continue
 
         try:
-            region = planner.step(frame, intent)
+            action_list = planner.step(frame, intent)
         except NotImplementedError as e:
             print(f"[main] {e}")
             break
 
-        if region:
-            executor.execute(region)
+        if action_list:
+            executor.execute(action_list)
 
         time.sleep(_LOOP_INTERVAL)
 

@@ -12,9 +12,15 @@ class TapAction:
 @dataclass
 class SwipeAction:
     """从 from_position 按住滑向 to_position，对应 adb input swipe，用于拖动地图或滚动列表。"""
-    from_position: tuple[float, float]   # 归一化起点 (x, y)
-    to_position: tuple[float, float]     # 归一化终点 (x, y)
-    duration_ms: int = 1500
+    from_position: tuple[float, float]
+    to_position: tuple[float, float]
+    duration_milliseconds: int = 1500
 
 
-Action = TapAction | SwipeAction
+@dataclass
+class SleepAction:
+    """在两个动作之间等待，给游戏动画或响应留出时间。"""
+    duration_seconds: float
+
+
+Action = TapAction | SwipeAction | SleepAction

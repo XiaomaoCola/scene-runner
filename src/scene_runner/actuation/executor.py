@@ -1,6 +1,7 @@
 import subprocess
+import time
 
-from scene_runner.actuation.actions import Action, TapAction, SwipeAction
+from scene_runner.actuation.actions import Action, TapAction, SwipeAction, SleepAction
 
 _DEFAULT_ADB = r"C:\Program Files\BlueStacks_nxt\HD-Adb.exe"
 _DEFAULT_DEVICE = "127.0.0.1:5555"
@@ -17,11 +18,15 @@ class Executor:
         self._adb = adb_path
         self._device = device
 
-    def execute(self, action: Action) -> None:
-        if isinstance(action, TapAction):
-            self._tap_center(action.region)
-        elif isinstance(action, SwipeAction):
-            self._swipe(action.from_position, action.to_position, action.duration_ms)
+    def execute(self, actions: list[Action]) -> None:
+        for action in actions:
+            if isinstance(action, TapAction):
+                self._tap_center(action.region)
+            elif isinstance(action, SwipeAction):
+                self._swipe(action.from_position, action.to_position, action.duration_milliseconds)
+            elif isinstance(action, SleepAction):
+                print(f"[executor] sleep {action.duration_seconds}s")
+                time.sleep(action.duration_seconds)
 
     def _tap_center(self, region: tuple[float, float, float, float]) -> None:
         x1, y1, x2, y2 = region
@@ -35,17 +40,17 @@ class Executor:
 
     def _swipe(
         self,
-        from_pos: tuple[float, float],
-        to_pos: tuple[float, float],
-        duration_ms: int,
+        from_position: tuple[float, float],
+        to_position: tuple[float, float],
+        duration_milliseconds: int,
     ) -> None:
-        x1 = int(from_pos[0] * self._w)
-        y1 = int(from_pos[1] * self._h)
-        x2 = int(to_pos[0] * self._w)
-        y2 = int(to_pos[1] * self._h)
+        x1 = int(from_position[0] * self._w)
+        y1 = int(from_position[1] * self._h)
+        x2 = int(to_position[0] * self._w)
+        y2 = int(to_position[1] * self._h)
         subprocess.run(
             [self._adb, "-s", self._device, "shell", "input", "swipe",
-             str(x1), str(y1), str(x2), str(y2), str(duration_ms)],
+             str(x1), str(y1), str(x2), str(y2), str(duration_milliseconds)],
             capture_output=True,
         )
-        print(f"[executor] swipe ({x1},{y1}) → ({x2},{y2}) {duration_ms}ms")
+        print(f"[executor] swipe ({x1},{y1}) → ({x2},{y2}) {duration_milliseconds}ms")

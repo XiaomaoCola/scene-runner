@@ -19,7 +19,7 @@ class Planner:
         self,
         frame_rgb: np.ndarray,
         intent,
-    ) -> Action | None:
+    ) -> list[Action] | None:
         if isinstance(intent, BuilderBaseAttackIntent):
             return self._bb_attack.step(frame_rgb)
         return None
