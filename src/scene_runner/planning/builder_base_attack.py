@@ -74,6 +74,6 @@ class BuilderBaseAttackPlan:
 
         if self.state == Stage.BATTLE_SCENE:
             self.to_surrender_confirm()
-            return SwipeAction(from_pos=(0.5, 0.8), to_pos=(0.05, 0.05), duration_ms=1500)
+            return SwipeAction(from_position=(0.5, 0.8), to_position=(0.05, 0.05), duration_ms=1500)
 
         return None

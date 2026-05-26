@@ -21,7 +21,7 @@ class Executor:
         if isinstance(action, TapAction):
             self._tap_center(action.region)
         elif isinstance(action, SwipeAction):
-            self._swipe(action.from_pos, action.to_pos, action.duration_ms)
+            self._swipe(action.from_position, action.to_position, action.duration_ms)
 
     def _tap_center(self, region: tuple[float, float, float, float]) -> None:
         x1, y1, x2, y2 = region
