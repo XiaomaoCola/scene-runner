@@ -41,24 +41,24 @@ class BuilderBaseAttackPlan:
 
         self._matchers: dict[Stage, TemplateMatcher] = {
             Stage.VILLAGE: TemplateMatcher(
-                template_path=_ROOT / "data/templates/builder_base/base/attack.png",
+                template_path=_ROOT / "data/templates/builder_base/BuilderBaseAttackIntent/stage1_builder_base/attack.png",
                 region=(0.00, 0.75, 0.15, 1.00),
             ),
             Stage.ATTACK_MENU: TemplateMatcher(
-                template_path=_ROOT / "data/templates/builder_base/attack_menu/stage2_attack_menu_find_match_region.png",
+                template_path=_ROOT / "data/templates/builder_base/BuilderBaseAttackIntent/stage2_attack_menu/stage2_attack_menu_find_match_region.png",
                 region=(0.6385, 0.587, 0.8438, 0.7296),
             ),
             Stage.BATTLE_SCENE: TemplateMatcher(
-                template_path=_ROOT / "data/templates/builder_base/stage3_battle_scene/night_witch.png",
+                template_path=_ROOT / "data/templates/builder_base/BuilderBaseAttackIntent/stage3_battle_scene/night_witch.png",
                 region=(0.0, 0.8056, 1.0, 1.0),
                 mode="search",
             ),
             Stage.SURRENDER_CONFIRM: TemplateMatcher(
-                template_path=_ROOT / "data/templates/builder_base/stage4_surrender_confirm/stage4_surrender_confirm_surrender_confirm_ok_button_region.png",
+                template_path=_ROOT / "data/templates/builder_base/BuilderBaseAttackIntent/stage4_surrender_confirm/stage4_surrender_confirm_surrender_confirm_ok_button_region.png",
                 region=(0.526, 0.5833, 0.6927, 0.6944),
             ),
             Stage.RETURN_HOME: TemplateMatcher(
-                template_path=_ROOT / "data/templates/builder_base/stage5_return_home/stage5_return_home_return_home_button_region.png",
+                template_path=_ROOT / "data/templates/builder_base/BuilderBaseAttackIntent/stage5_return_home/stage5_return_home_return_home_button_region.png",
                 region=(0.4427, 0.8102, 0.5599, 0.8796),
             ),
         }
@@ -77,14 +77,14 @@ class BuilderBaseAttackPlan:
         if self.state == Stage.VILLAGE:
             self.to_attack_menu()
             return [
-                TapAction(region=(0.00, 0.75, 0.15, 1.00)),
+                TapAction(region=(0.00, 0.75, 0.15, 1.00)),  # 点击左下角的 Attack 按钮
                 SleepAction(duration_seconds=2.0),
             ]
 
         if self.state == Stage.ATTACK_MENU:
             self.to_battle_scene()
             return [
-                TapAction(region=(0.6385, 0.587, 0.8438, 0.7296)),
+                TapAction(region=(0.6385, 0.587, 0.8438, 0.7296)),  # 点击 Find Now! 那个按钮
                 SleepAction(duration_seconds=2.0),
             ]
 
@@ -93,25 +93,25 @@ class BuilderBaseAttackPlan:
             return [
                 SwipeAction(from_position=(0.5, 0.8), to_position=(0.05, 0.05), duration_milliseconds=1500),
                 SleepAction(duration_seconds=1.5),
-                TapAction(region=(0.1578, 0.8657, 0.2214, 0.9204)),   # night_witch
+                TapAction(region=(0.1578, 0.8657, 0.2214, 0.9204)),   # 选中 night_witch
                 SleepAction(duration_seconds=0.5),
-                TapAction(region=(0.3385, 0.6296, 0.3542, 0.6389)),   # deployment_zone
+                TapAction(region=(0.3385, 0.6296, 0.3542, 0.6389)),   # 在 deployment_zone 里部署 night_witch
                 SleepAction(duration_seconds=2.0),
-                TapAction(region=(0.0208, 0.6667, 0.125, 0.7222)),    # surrender_button
+                TapAction(region=(0.0208, 0.6667, 0.125, 0.7222)),    # 点击 surrender_button
                 SleepAction(duration_seconds=2.0),
             ]
 
         if self.state == Stage.SURRENDER_CONFIRM:
             self.to_return_home()
             return [
-                TapAction(region=(0.526, 0.5833, 0.6927, 0.6944)),    # surrender_confirm_ok_button
+                TapAction(region=(0.526, 0.5833, 0.6927, 0.6944)),    # 点击 surrender_confirm_ok_button
                 SleepAction(duration_seconds=2.0),
             ]
 
         if self.state == Stage.RETURN_HOME:
             self.to_village()
             return [
-                TapAction(region=(0.4427, 0.8102, 0.5599, 0.8796)),   # return_home_button
+                TapAction(region=(0.4427, 0.8102, 0.5599, 0.8796)),   # 点击 return_home_button
                 SleepAction(duration_seconds=2.0),
             ]
 
