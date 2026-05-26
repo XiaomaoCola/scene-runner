@@ -5,7 +5,7 @@ from scene_runner.decision.fsm import Fsm
 from scene_runner.planning.planner import Planner
 from scene_runner.actuation.executor import Executor
 
-_LOOP_INTERVAL = 3  # 每帧间隔（秒）
+_LOOP_INTERVAL = 1  # 每帧间隔（秒）
 
 
 def main() -> None:
@@ -30,12 +30,13 @@ def main() -> None:
     while True:
         frame = capture.read()
         if frame is None:
-            print("WARN: 截图失败，跳过本帧")
+            print("WARN: 截图失败，跳过本此循环")
             time.sleep(_LOOP_INTERVAL)
             continue
 
         intent = fsm.decide(frame)
         if intent is None:
+            print("WARN: INTENT 返回为空，跳过本次循环")
             time.sleep(_LOOP_INTERVAL)
             continue
 

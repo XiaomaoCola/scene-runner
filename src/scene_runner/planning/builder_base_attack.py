@@ -76,11 +76,17 @@ class BuilderBaseAttackPlan:
 
         if self.state == Stage.VILLAGE:
             self.to_attack_menu()
-            return [TapAction(region=(0.00, 0.75, 0.15, 1.00))]
+            return [
+                TapAction(region=(0.00, 0.75, 0.15, 1.00)),
+                SleepAction(duration_seconds=2.0),
+            ]
 
         if self.state == Stage.ATTACK_MENU:
             self.to_battle_scene()
-            return [TapAction(region=(0.6385, 0.587, 0.8438, 0.7296))]
+            return [
+                TapAction(region=(0.6385, 0.587, 0.8438, 0.7296)),
+                SleepAction(duration_seconds=2.0),
+            ]
 
         if self.state == Stage.BATTLE_SCENE:
             self.to_surrender_confirm()
@@ -92,14 +98,21 @@ class BuilderBaseAttackPlan:
                 TapAction(region=(0.3385, 0.6296, 0.3542, 0.6389)),   # deployment_zone
                 SleepAction(duration_seconds=2.0),
                 TapAction(region=(0.0208, 0.6667, 0.125, 0.7222)),    # surrender_button
+                SleepAction(duration_seconds=2.0),
             ]
 
         if self.state == Stage.SURRENDER_CONFIRM:
             self.to_return_home()
-            return [TapAction(region=(0.526, 0.5833, 0.6927, 0.6944))]   # surrender_confirm_ok_button
+            return [
+                TapAction(region=(0.526, 0.5833, 0.6927, 0.6944)),    # surrender_confirm_ok_button
+                SleepAction(duration_seconds=2.0),
+            ]
 
         if self.state == Stage.RETURN_HOME:
             self.to_village()
-            return [TapAction(region=(0.4427, 0.8102, 0.5599, 0.8796))]  # return_home_button
+            return [
+                TapAction(region=(0.4427, 0.8102, 0.5599, 0.8796)),   # return_home_button
+                SleepAction(duration_seconds=2.0),
+            ]
 
         return None
