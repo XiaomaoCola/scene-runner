@@ -53,6 +53,14 @@ class BuilderBaseAttackPlan:
                 region=(0.0, 0.8056, 1.0, 1.0),
                 mode="search",
             ),
+            Stage.SURRENDER_CONFIRM: TemplateMatcher(
+                template_path=_ROOT / "data/templates/builder_base/stage4_surrender_confirm/stage4_surrender_confirm_surrender_confirm_ok_button_region.png",
+                region=(0.526, 0.5833, 0.6927, 0.6944),
+            ),
+            Stage.RETURN_HOME: TemplateMatcher(
+                template_path=_ROOT / "data/templates/builder_base/stage5_return_home/stage5_return_home_return_home_button_region.png",
+                region=(0.4427, 0.8102, 0.5599, 0.8796),
+            ),
         }
 
     def step(self, frame_rgb: np.ndarray) -> list[Action] | None:
@@ -85,5 +93,13 @@ class BuilderBaseAttackPlan:
                 SleepAction(duration_seconds=2.0),
                 TapAction(region=(0.0208, 0.6667, 0.125, 0.7222)),    # surrender_button
             ]
+
+        if self.state == Stage.SURRENDER_CONFIRM:
+            self.to_return_home()
+            return [TapAction(region=(0.526, 0.5833, 0.6927, 0.6944))]   # surrender_confirm_ok_button
+
+        if self.state == Stage.RETURN_HOME:
+            self.to_village()
+            return [TapAction(region=(0.4427, 0.8102, 0.5599, 0.8796))]  # return_home_button
 
         return None
