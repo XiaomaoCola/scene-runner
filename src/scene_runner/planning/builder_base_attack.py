@@ -17,7 +17,7 @@ class Stage(Enum):
     ATTACK_MENU  = "stage2_attack_menu"
     BATTLE_SCENE = "stage3_battle_scene"
     SURRENDER_CONFIRM = "stage4_surrender_confirm"
-    RETURN_HOME = "state5_return_home"
+    RETURN_HOME = "stage5_return_home"
 
 
 class BuilderBaseAttackPlan:
@@ -82,6 +82,8 @@ class BuilderBaseAttackPlan:
                 TapAction(region=(0.1578, 0.8657, 0.2214, 0.9204)),   # night_witch
                 SleepAction(duration_seconds=0.5),
                 TapAction(region=(0.3385, 0.6296, 0.3542, 0.6389)),   # deployment_zone
+                SleepAction(duration_seconds=2.0),
+                TapAction(region=(0.0208, 0.6667, 0.125, 0.7222)),    # surrender_button
             ]
 
         return None

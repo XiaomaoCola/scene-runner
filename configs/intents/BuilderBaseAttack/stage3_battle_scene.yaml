@@ -18,3 +18,10 @@ deployment_zone:
   top: 0.6296
   right: 0.3542
   bottom: 0.6389
+
+surrender_button:
+  type: rect
+  left: 0.0208
+  top: 0.6667
+  right: 0.125
+  bottom: 0.7222
