@@ -1,0 +1,6 @@
+return_home_button:
+  type: rect
+  left: 0.4427
+  top: 0.8102
+  right: 0.5599
+  bottom: 0.8796

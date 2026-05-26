@@ -17,6 +17,7 @@ class Stage(Enum):
     ATTACK_MENU  = "stage2_attack_menu"
     BATTLE_SCENE = "stage3_battle_scene"
     SURRENDER_CONFIRM = "stage4_surrender_confirm"
+    RETURN_HOME = "state5_return_home"
 
 
 class BuilderBaseAttackPlan:
@@ -35,7 +36,8 @@ class BuilderBaseAttackPlan:
         self.machine.add_transition("to_attack_menu",  Stage.VILLAGE,      Stage.ATTACK_MENU)
         self.machine.add_transition("to_battle_scene", Stage.ATTACK_MENU,  Stage.BATTLE_SCENE)
         self.machine.add_transition("to_surrender_confirm", Stage.BATTLE_SCENE, Stage.SURRENDER_CONFIRM)
-        self.machine.add_transition("to_village",  Stage.SURRENDER_CONFIRM, Stage.VILLAGE)
+        self.machine.add_transition("to_return_home",  Stage.SURRENDER_CONFIRM, Stage.RETURN_HOME)
+        self.machine.add_transition("to_village", Stage.RETURN_HOME, Stage.VILLAGE)
 
         self._matchers: dict[Stage, TemplateMatcher] = {
             Stage.VILLAGE: TemplateMatcher(

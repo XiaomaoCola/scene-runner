@@ -1,0 +1,13 @@
+surrender_button:
+  type: rect
+  left: 0.0208
+  top: 0.6667
+  right: 0.125
+  bottom: 0.7222
+
+surrender_confirm_ok_button:
+  type: rect
+  left: 0.526
+  top: 0.5833
+  right: 0.6927
+  bottom: 0.6944
