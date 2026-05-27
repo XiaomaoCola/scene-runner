@@ -1,7 +1,8 @@
+import random
 import subprocess
 import time
 
-from scene_runner.actuation.actions import Action, TapAction, SwipeAction, SleepAction
+from scene_runner.actuation.actions import Action, TapAction, SwipeAction, SleepAction, RandomSleepAction
 
 _DEFAULT_ADB = r"C:\Program Files\BlueStacks_nxt\HD-Adb.exe"
 _DEFAULT_DEVICE = "127.0.0.1:5555"
@@ -27,6 +28,10 @@ class Executor:
             elif isinstance(action, SleepAction):
                 print(f"[executor] sleep {action.duration_seconds}s")
                 time.sleep(action.duration_seconds)
+            elif isinstance(action, RandomSleepAction):
+                duration = random.uniform(action.minimum_seconds, action.maximum_seconds)
+                print(f"[executor] random sleep {duration:.2f}s (range {action.minimum_seconds}~{action.maximum_seconds}s)")
+                time.sleep(duration)
 
     def _tap_center(self, region: tuple[float, float, float, float]) -> None:
         x1, y1, x2, y2 = region

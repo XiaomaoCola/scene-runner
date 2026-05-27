@@ -6,7 +6,7 @@ from pathlib import Path
 import numpy as np
 from transitions import Machine
 
-from scene_runner.actuation.actions import Action, TapAction, SwipeAction, SleepAction
+from scene_runner.actuation.actions import Action, TapAction, SwipeAction, RandomSleepAction
 from scene_runner.decision.template_matcher import TemplateMatcher
 
 _ROOT = Path(__file__).parents[3]
@@ -78,41 +78,42 @@ class BuilderBaseAttackPlan:
             self.to_attack_menu()
             return [
                 TapAction(region=(0.00, 0.75, 0.15, 1.00)),  # 点击左下角的 Attack 按钮
-                SleepAction(duration_seconds=2.0),
+                RandomSleepAction(minimum_seconds=1.5, maximum_seconds=2.5),
             ]
 
         if self.state == Stage.ATTACK_MENU:
             self.to_battle_scene()
             return [
                 TapAction(region=(0.6385, 0.587, 0.8438, 0.7296)),  # 点击 Find Now! 那个按钮
-                SleepAction(duration_seconds=2.0),
+                RandomSleepAction(minimum_seconds=3.0, maximum_seconds=3.5),
             ]
 
         if self.state == Stage.BATTLE_SCENE:
             self.to_surrender_confirm()
             return [
                 SwipeAction(from_position=(0.5, 0.8), to_position=(0.05, 0.05), duration_milliseconds=1500),
-                SleepAction(duration_seconds=1.5),
+                # 这里是滑动到战斗界面的村庄的右下角，用于对齐坐标。
+                RandomSleepAction(minimum_seconds=1.0, maximum_seconds=2.0),
                 TapAction(region=(0.1578, 0.8657, 0.2214, 0.9204)),   # 选中 night_witch
-                SleepAction(duration_seconds=0.5),
+                RandomSleepAction(minimum_seconds=0.2, maximum_seconds=1.0),
                 TapAction(region=(0.3385, 0.6296, 0.3542, 0.6389)),   # 在 deployment_zone 里部署 night_witch
-                SleepAction(duration_seconds=2.0),
+                RandomSleepAction(minimum_seconds=1.5, maximum_seconds=2.5),
                 TapAction(region=(0.0208, 0.6667, 0.125, 0.7222)),    # 点击 surrender_button
-                SleepAction(duration_seconds=2.0),
+                RandomSleepAction(minimum_seconds=1.5, maximum_seconds=2.5),
             ]
 
         if self.state == Stage.SURRENDER_CONFIRM:
             self.to_return_home()
             return [
                 TapAction(region=(0.526, 0.5833, 0.6927, 0.6944)),    # 点击 surrender_confirm_ok_button
-                SleepAction(duration_seconds=2.0),
+                RandomSleepAction(minimum_seconds=2.5, maximum_seconds=3.0),
             ]
 
         if self.state == Stage.RETURN_HOME:
             self.to_village()
             return [
                 TapAction(region=(0.4427, 0.8102, 0.5599, 0.8796)),   # 点击 return_home_button
-                SleepAction(duration_seconds=2.0),
+                RandomSleepAction(minimum_seconds=1.5, maximum_seconds=2.5),
             ]
 
         return None

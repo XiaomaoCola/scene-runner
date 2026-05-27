@@ -23,4 +23,11 @@ class SleepAction:
     duration_seconds: float
 
 
-Action = TapAction | SwipeAction | SleepAction
+@dataclass
+class RandomSleepAction:
+    """在 minimum_seconds 到 maximum_seconds 之间随机等待，用于模拟人类操作节奏，降低封号风险。"""
+    minimum_seconds: float
+    maximum_seconds: float
+
+
+Action = TapAction | SwipeAction | SleepAction | RandomSleepAction
