@@ -3,6 +3,7 @@ from __future__ import annotations
 from enum import Enum
 from pathlib import Path
 
+import yaml
 import numpy as np
 from transitions import Machine
 
@@ -10,14 +11,24 @@ from scene_runner.actuation.actions import Action, TapAction, SwipeAction, Rando
 from scene_runner.decision.template_matcher import TemplateMatcher
 
 _ROOT = Path(__file__).parents[3]
+_CONFIGS = _ROOT / "configs/intents/BuilderBaseAttack"
+
+
+def _load_regions(yaml_path: Path) -> dict[str, tuple[float, float, float, float]]:
+    with open(yaml_path, encoding="utf-8") as f:
+        data = yaml.safe_load(f)
+    return {
+        key: (elem["left"], elem["top"], elem["right"], elem["bottom"])
+        for key, elem in data.items()
+    }
 
 
 class Stage(Enum):
-    VILLAGE      = "stage1_builder_base"
-    ATTACK_MENU  = "stage2_attack_menu"
-    BATTLE_SCENE = "stage3_battle_scene"
+    VILLAGE           = "stage1_builder_base"
+    ATTACK_MENU       = "stage2_attack_menu"
+    BATTLE_SCENE      = "stage3_battle_scene"
     SURRENDER_CONFIRM = "stage4_surrender_confirm"
-    RETURN_HOME = "stage5_return_home"
+    RETURN_HOME       = "stage5_return_home"
 
 
 class BuilderBaseAttackPlan:
@@ -27,39 +38,45 @@ class BuilderBaseAttackPlan:
     """
 
     def __init__(self) -> None:
+        self._stage1_builder_base_regions      = _load_regions(_CONFIGS / "stage1_builder_base.yaml")
+        self._stage2_attack_menu_regions       = _load_regions(_CONFIGS / "stage2_attack_menu.yaml")
+        self._stage3_battle_scene_regions      = _load_regions(_CONFIGS / "stage3_battle_scene.yaml")
+        self._stage4_surrender_confirm_regions = _load_regions(_CONFIGS / "stage4_surrender_confirm.yaml")
+        self._stage5_return_home_regions       = _load_regions(_CONFIGS / "stage5_return_home.yaml")
+
         self.machine = Machine(
             model=self,
             states=Stage,
             initial=Stage.VILLAGE,
             ignore_invalid_triggers=True,
         )
-        self.machine.add_transition("to_attack_menu",  Stage.VILLAGE,      Stage.ATTACK_MENU)
-        self.machine.add_transition("to_battle_scene", Stage.ATTACK_MENU,  Stage.BATTLE_SCENE)
-        self.machine.add_transition("to_surrender_confirm", Stage.BATTLE_SCENE, Stage.SURRENDER_CONFIRM)
-        self.machine.add_transition("to_return_home",  Stage.SURRENDER_CONFIRM, Stage.RETURN_HOME)
-        self.machine.add_transition("to_village", Stage.RETURN_HOME, Stage.VILLAGE)
+        self.machine.add_transition("to_attack_menu",       Stage.VILLAGE,           Stage.ATTACK_MENU)
+        self.machine.add_transition("to_battle_scene",      Stage.ATTACK_MENU,       Stage.BATTLE_SCENE)
+        self.machine.add_transition("to_surrender_confirm", Stage.BATTLE_SCENE,      Stage.SURRENDER_CONFIRM)
+        self.machine.add_transition("to_return_home",       Stage.SURRENDER_CONFIRM, Stage.RETURN_HOME)
+        self.machine.add_transition("to_village",           Stage.RETURN_HOME,       Stage.VILLAGE)
 
         self._matchers: dict[Stage, TemplateMatcher] = {
             Stage.VILLAGE: TemplateMatcher(
                 template_path=_ROOT / "data/templates/builder_base/BuilderBaseAttackIntent/stage1_builder_base/attack.png",
-                region=(0.00, 0.75, 0.15, 1.00),
+                region=self._stage1_builder_base_regions["attack"],
             ),
             Stage.ATTACK_MENU: TemplateMatcher(
                 template_path=_ROOT / "data/templates/builder_base/BuilderBaseAttackIntent/stage2_attack_menu/stage2_attack_menu_find_match_region.png",
-                region=(0.6385, 0.587, 0.8438, 0.7296),
+                region=self._stage2_attack_menu_regions["find_match"],
             ),
             Stage.BATTLE_SCENE: TemplateMatcher(
                 template_path=_ROOT / "data/templates/builder_base/BuilderBaseAttackIntent/stage3_battle_scene/night_witch.png",
-                region=(0.0, 0.8056, 1.0, 1.0),
+                region=self._stage3_battle_scene_regions["troop_bar"],
                 mode="search",
             ),
             Stage.SURRENDER_CONFIRM: TemplateMatcher(
                 template_path=_ROOT / "data/templates/builder_base/BuilderBaseAttackIntent/stage4_surrender_confirm/stage4_surrender_confirm_surrender_confirm_ok_button_region.png",
-                region=(0.526, 0.5833, 0.6927, 0.6944),
+                region=self._stage4_surrender_confirm_regions["surrender_confirm_ok_button"],
             ),
             Stage.RETURN_HOME: TemplateMatcher(
                 template_path=_ROOT / "data/templates/builder_base/BuilderBaseAttackIntent/stage5_return_home/stage5_return_home_return_home_button_region.png",
-                region=(0.4427, 0.8102, 0.5599, 0.8796),
+                region=self._stage5_return_home_regions["return_home_button"],
             ),
         }
 
@@ -77,14 +94,14 @@ class BuilderBaseAttackPlan:
         if self.state == Stage.VILLAGE:
             self.to_attack_menu()
             return [
-                TapAction(region=(0.00, 0.75, 0.15, 1.00)),  # 点击左下角的 Attack 按钮
+                TapAction(region=self._stage1_builder_base_regions["attack"]),  # 点击左下角的 Attack 按钮
                 RandomSleepAction(minimum_seconds=1.5, maximum_seconds=2.5),
             ]
 
         if self.state == Stage.ATTACK_MENU:
             self.to_battle_scene()
             return [
-                TapAction(region=(0.6385, 0.587, 0.8438, 0.7296)),  # 点击 Find Now! 那个按钮
+                TapAction(region=self._stage2_attack_menu_regions["find_match"]),  # 点击 Find Now! 那个按钮
                 RandomSleepAction(minimum_seconds=3.0, maximum_seconds=3.5),
             ]
 
@@ -92,27 +109,27 @@ class BuilderBaseAttackPlan:
             self.to_surrender_confirm()
             return [
                 SwipeAction(from_position=(0.5, 0.8), to_position=(0.05, 0.05), duration_milliseconds=1500),
-                # 这里是滑动到战斗界面的村庄的右下角，用于对齐坐标。
+                # 滑动到战斗界面的村庄的右下角，用于对齐坐标
                 RandomSleepAction(minimum_seconds=1.0, maximum_seconds=2.0),
-                TapAction(region=(0.1578, 0.8657, 0.2214, 0.9204)),   # 选中 night_witch
+                TapAction(region=self._stage3_battle_scene_regions["night_witch"]),       # 选中 night_witch
                 RandomSleepAction(minimum_seconds=0.2, maximum_seconds=1.0),
-                TapAction(region=(0.3385, 0.6296, 0.3542, 0.6389)),   # 在 deployment_zone 里部署 night_witch
+                TapAction(region=self._stage3_battle_scene_regions["deployment_zone"]),   # 在 deployment_zone 里部署 night_witch
                 RandomSleepAction(minimum_seconds=1.5, maximum_seconds=2.5),
-                TapAction(region=(0.0208, 0.6667, 0.125, 0.7222)),    # 点击 surrender_button
+                TapAction(region=self._stage3_battle_scene_regions["surrender_button"]),  # 点击 surrender_button
                 RandomSleepAction(minimum_seconds=1.5, maximum_seconds=2.5),
             ]
 
         if self.state == Stage.SURRENDER_CONFIRM:
             self.to_return_home()
             return [
-                TapAction(region=(0.526, 0.5833, 0.6927, 0.6944)),    # 点击 surrender_confirm_ok_button
+                TapAction(region=self._stage4_surrender_confirm_regions["surrender_confirm_ok_button"]),  # 点击 surrender_confirm_ok_button
                 RandomSleepAction(minimum_seconds=2.5, maximum_seconds=3.0),
             ]
 
         if self.state == Stage.RETURN_HOME:
             self.to_village()
             return [
-                TapAction(region=(0.4427, 0.8102, 0.5599, 0.8796)),   # 点击 return_home_button
+                TapAction(region=self._stage5_return_home_regions["return_home_button"]),  # 点击 return_home_button
                 RandomSleepAction(minimum_seconds=1.5, maximum_seconds=2.5),
             ]
 
