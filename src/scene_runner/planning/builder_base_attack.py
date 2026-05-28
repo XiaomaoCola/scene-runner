@@ -15,6 +15,8 @@ from scene_runner.decision.template_matcher import TemplateMatcher
 _ROOT = Path(__file__).parents[3]
 _CONFIGS = _ROOT / "configs/intents/BuilderBaseAttack"
 
+_FAILURE_THRESHOLD = 8  # 连续失败超过此次数后进入 UNKNOWN 状态
+
 
 def _load_regions(yaml_path: Path) -> dict[str, tuple[float, float, float, float]]:
     with open(yaml_path, encoding="utf-8") as f:
@@ -31,6 +33,17 @@ class Stage(Enum):
     BATTLE_SCENE      = "stage3_battle_scene"
     SURRENDER_CONFIRM = "stage4_surrender_confirm"
     RETURN_HOME       = "stage5_return_home"
+    UNKNOWN           = "unknown"
+
+
+# UNKNOWN 恢复到各 stage 的 trigger 名称映射
+_RECOVERY_TRIGGERS: dict[Stage, str] = {
+    Stage.VILLAGE:           "recover_to_village",
+    Stage.ATTACK_MENU:       "recover_to_attack_menu",
+    Stage.BATTLE_SCENE:      "recover_to_battle_scene",
+    Stage.SURRENDER_CONFIRM: "recover_to_surrender_confirm",
+    Stage.RETURN_HOME:       "recover_to_return_home",
+}
 
 
 class BuilderBaseAttackPlan:
@@ -46,6 +59,8 @@ class BuilderBaseAttackPlan:
         self._stage4_surrender_confirm_regions = _load_regions(_CONFIGS / "stage4_surrender_confirm.yaml")
         self._stage5_return_home_regions       = _load_regions(_CONFIGS / "stage5_return_home.yaml")
 
+        self._consecutive_failures = 0
+
         self.machine = Machine(
             model=self,
             states=Stage,
@@ -57,6 +72,12 @@ class BuilderBaseAttackPlan:
         self.machine.add_transition("to_surrender_confirm", Stage.BATTLE_SCENE,      Stage.SURRENDER_CONFIRM)
         self.machine.add_transition("to_return_home",       Stage.SURRENDER_CONFIRM, Stage.RETURN_HOME)
         self.machine.add_transition("to_village",           Stage.RETURN_HOME,       Stage.VILLAGE)
+        self.machine.add_transition("to_unknown",           "*",                     Stage.UNKNOWN)
+        self.machine.add_transition("recover_to_village",           Stage.UNKNOWN, Stage.VILLAGE)
+        self.machine.add_transition("recover_to_attack_menu",       Stage.UNKNOWN, Stage.ATTACK_MENU)
+        self.machine.add_transition("recover_to_battle_scene",      Stage.UNKNOWN, Stage.BATTLE_SCENE)
+        self.machine.add_transition("recover_to_surrender_confirm", Stage.UNKNOWN, Stage.SURRENDER_CONFIRM)
+        self.machine.add_transition("recover_to_return_home",       Stage.UNKNOWN, Stage.RETURN_HOME)
 
         self._matchers: dict[Stage, TemplateMatcher] = {
             Stage.VILLAGE: TemplateMatcher(
@@ -82,7 +103,28 @@ class BuilderBaseAttackPlan:
             ),
         }
 
+    def _recover(self, frame_rgb: np.ndarray) -> None:
+        best_stage: Stage | None = None
+        best_score = 0.0
+        for stage, matcher in self._matchers.items():
+            score = matcher.score(frame_rgb)
+            print(f"[bb_plan|UNKNOWN] scanning {stage.name}: score={score:.3f}")
+            if score > best_score:
+                best_score = score
+                best_stage = stage
+
+        if best_stage is not None and self._matchers[best_stage].is_match(frame_rgb):
+            print(f"[bb_plan|UNKNOWN] → 恢复至 {best_stage.name}")
+            getattr(self, _RECOVERY_TRIGGERS[best_stage])()
+            self._consecutive_failures = 0
+        else:
+            print("[bb_plan|UNKNOWN] 无法识别当前界面，继续等待")
+
     def step(self, frame_rgb: np.ndarray) -> list[Action] | None:
+        if self.state == Stage.UNKNOWN:
+            self._recover(frame_rgb)
+            return None
+
         matcher = self._matchers.get(self.state)
         if matcher is None:
             raise NotImplementedError(f"[bb_plan|{self.state.name}] 暂无模板，终止循环")
@@ -91,7 +133,14 @@ class BuilderBaseAttackPlan:
         print(f"[bb_plan|{self.state.name}] score={score:.3f}")
 
         if not matcher.is_match(frame_rgb):
+            self._consecutive_failures += 1
+            if self._consecutive_failures >= _FAILURE_THRESHOLD:
+                print(f"[bb_plan|{self.state.name}] 连续失败 {self._consecutive_failures} 次，进入 UNKNOWN")
+                self.to_unknown()
+                self._consecutive_failures = 0
             return None
+
+        self._consecutive_failures = 0
 
         if self.state == Stage.VILLAGE:
             self.to_attack_menu()
@@ -116,14 +165,13 @@ class BuilderBaseAttackPlan:
                 TapAction(region=self._stage3_battle_scene_regions["night_witch"]),  # 选中 night_witch
                 RandomSleepAction(minimum_seconds=0.2, maximum_seconds=1.0),
             ]
-            # 这里是把 actions 先放入几个action，后面逻辑再 append。
             for zone_key in ["deployment_zone_2", "deployment_zone_3", "deployment_zone_4"]:
                 for _ in range(random.randint(2, 5)):
                     actions.append(RandomTapAction(region=self._stage3_battle_scene_regions[zone_key]))
                     actions.append(RandomSleepAction(minimum_seconds=0.1, maximum_seconds=0.3))
             actions += [
                 RandomSleepAction(minimum_seconds=30, maximum_seconds=50),
-                # 等待军队进攻的时间，时间到了之后会直接投降。
+                # 等待军队进攻的时间，时间到了之后会直接投降
                 TapAction(region=self._stage3_battle_scene_regions["surrender_button"]),  # 点击 surrender_button
                 RandomSleepAction(minimum_seconds=1.5, maximum_seconds=2.5),
             ]
