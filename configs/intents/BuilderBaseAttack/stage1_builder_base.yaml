@@ -1,6 +1,13 @@
-attack:
+attack_button:
   type: rect
-  left: 0.00
-  top: 0.75
-  right: 0.15
-  bottom: 1.00
+  left: 0.0208
+  top: 0.8102
+  right: 0.1094
+  bottom: 0.963
+
+army_training_button:
+  type: rect
+  left: 0.0208
+  top: 0.6898
+  right: 0.0625
+  bottom: 0.7593

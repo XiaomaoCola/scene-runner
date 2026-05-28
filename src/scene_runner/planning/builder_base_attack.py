@@ -58,8 +58,8 @@ class BuilderBaseAttackPlan:
 
         self._matchers: dict[Stage, TemplateMatcher] = {
             Stage.VILLAGE: TemplateMatcher(
-                template_path=_ROOT / "data/templates/builder_base/BuilderBaseAttackIntent/stage1_builder_base/attack.png",
-                region=self._stage1_builder_base_regions["attack"],
+                template_path=_ROOT / "data/templates/builder_base/BuilderBaseAttackIntent/stage1_builder_base/stage1_builder_base_army_training_button_region.png",
+                region=self._stage1_builder_base_regions["army_training_button"],
             ),
             Stage.ATTACK_MENU: TemplateMatcher(
                 template_path=_ROOT / "data/templates/builder_base/BuilderBaseAttackIntent/stage2_attack_menu/stage2_attack_menu_find_match_region.png",
@@ -94,7 +94,7 @@ class BuilderBaseAttackPlan:
         if self.state == Stage.VILLAGE:
             self.to_attack_menu()
             return [
-                TapAction(region=self._stage1_builder_base_regions["attack"]),  # 点击左下角的 Attack 按钮
+                TapAction(region=self._stage1_builder_base_regions["attack_button"]),  # 点击左下角的 Attack 按钮
                 RandomSleepAction(minimum_seconds=1.5, maximum_seconds=2.5),
             ]
 
