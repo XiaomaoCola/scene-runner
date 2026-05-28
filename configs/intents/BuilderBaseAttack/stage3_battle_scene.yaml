@@ -19,6 +19,31 @@ deployment_zone:
   right: 0.3542
   bottom: 0.6389
 
+# X1, Y1 = 400, 600    # 左上角像素坐标   X2, Y2 = 500, 666  # 右下角像素坐标
+deployment_zone_2:
+  type: rect
+  left: 0.2083
+  top: 0.5556
+  right: 0.2604
+  bottom: 0.6167
+
+# X1, Y1 = 750, 450      # 左上角像素坐标   X2, Y2 = 1000, 530  # 右下角像素坐标
+deployment_zone_3:
+  type: rect
+  left: 0.3906
+  top: 0.4167
+  right: 0.5208
+  bottom: 0.4907
+
+# X1, Y1 = 1040, 200      # 左上角像素坐标   X2, Y2 = 1250, 300  # 右下角像素坐标
+deployment_zone_4:
+  type: rect
+  left: 0.5417
+  top: 0.1852
+  right: 0.651
+  bottom: 0.2778
+
+# 夜市界战斗过程中，左下角红色的投降按钮。
 surrender_button:
   type: rect
   left: 0.0208
