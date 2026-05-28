@@ -3,11 +3,13 @@ from __future__ import annotations
 from enum import Enum
 from pathlib import Path
 
+import random
+
 import yaml
 import numpy as np
 from transitions import Machine
 
-from scene_runner.actuation.actions import Action, TapAction, SwipeAction, RandomSleepAction
+from scene_runner.actuation.actions import Action, TapAction, SwipeAction, RandomSleepAction, RandomTapAction
 from scene_runner.decision.template_matcher import TemplateMatcher
 
 _ROOT = Path(__file__).parents[3]
@@ -107,17 +109,25 @@ class BuilderBaseAttackPlan:
 
         if self.state == Stage.BATTLE_SCENE:
             self.to_surrender_confirm()
-            return [
+            actions: list[Action] = [
                 SwipeAction(from_position=(0.5, 0.8), to_position=(0.05, 0.05), duration_milliseconds=1500),
                 # 滑动到战斗界面的村庄的右下角，用于对齐坐标
                 RandomSleepAction(minimum_seconds=1.0, maximum_seconds=2.0),
-                TapAction(region=self._stage3_battle_scene_regions["night_witch"]),       # 选中 night_witch
+                TapAction(region=self._stage3_battle_scene_regions["night_witch"]),  # 选中 night_witch
                 RandomSleepAction(minimum_seconds=0.2, maximum_seconds=1.0),
-                TapAction(region=self._stage3_battle_scene_regions["deployment_zone"]),   # 在 deployment_zone 里部署 night_witch
-                RandomSleepAction(minimum_seconds=1.5, maximum_seconds=2.5),
+            ]
+            # 这里是把 actions 先放入几个action，后面逻辑再 append。
+            for zone_key in ["deployment_zone_2", "deployment_zone_3", "deployment_zone_4"]:
+                for _ in range(random.randint(2, 5)):
+                    actions.append(RandomTapAction(region=self._stage3_battle_scene_regions[zone_key]))
+                    actions.append(RandomSleepAction(minimum_seconds=0.1, maximum_seconds=0.3))
+            actions += [
+                RandomSleepAction(minimum_seconds=30, maximum_seconds=50),
+                # 等待军队进攻的时间，时间到了之后会直接投降。
                 TapAction(region=self._stage3_battle_scene_regions["surrender_button"]),  # 点击 surrender_button
                 RandomSleepAction(minimum_seconds=1.5, maximum_seconds=2.5),
             ]
+            return actions
 
         if self.state == Stage.SURRENDER_CONFIRM:
             self.to_return_home()

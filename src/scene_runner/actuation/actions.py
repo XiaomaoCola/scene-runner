@@ -30,4 +30,10 @@ class RandomSleepAction:
     maximum_seconds: float
 
 
-Action = TapAction | SwipeAction | SleepAction | RandomSleepAction
+@dataclass
+class RandomTapAction:
+    """在 region 内随机选取一点点击，避免每次点击同一位置被识别为机器行为。"""
+    region: tuple[float, float, float, float]
+
+
+Action = TapAction | SwipeAction | SleepAction | RandomSleepAction | RandomTapAction
