@@ -4,43 +4,7 @@ from dataclasses import dataclass
 from typing import Optional
 import time
 
-
-@dataclass(slots=True)
-class Resources:
-    """
-    目前描述 主村庄资源状态，
-    不过这里是可以解耦的，因为未来进攻的时候，也是可以描述敌方村庄有多少资源。
-
-    为了未来可以解耦 描述夜世界 的资源状态（夜世界村庄没有黑水）， 把黑水改成可以为 None 。
-    """
-    gold: int                           # 金币数量
-    elixir: int                         # 圣水数量  
-    dark_elixir: Optional[int] = None   # 黑水数量（夜世界没有黑水）
-
-
-@dataclass(slots=True)
-class WorkersStatus:
-    """工人状态"""
-    total: int          # 总工人数量
-    idle: int           # 空闲工人数量
-    
-    @property
-    # @property 会把一个"方法"伪装成"属性"，
-    # 原来方法是obj.has_idle()，但是用了 @property 后 只要 obj.has_idle 就可以返回 True 或者 False。
-    def has_idle(self) -> bool:
-        """是否有空闲工人"""
-        return self.idle > 0
-
-
-@dataclass(slots=True)
-class LaboratoryStatus:
-    """实验室状态"""
-    is_researching: bool    # 是否正在研发
-    
-    @property
-    def is_idle(self) -> bool:
-        """实验室是否空闲"""
-        return not self.is_researching
+from scene_runner.world_model.common import Resources, WorkersStatus, LaboratoryStatus
 
 
 @dataclass(slots=True) 

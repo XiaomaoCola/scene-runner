@@ -12,6 +12,7 @@ army_training_button:
   right: 0.0625
   bottom: 0.7593
 
+# builder base的右上角表示金币资源的区域
 gold_resource:
   type: rect
   left: 0.7865
@@ -19,6 +20,7 @@ gold_resource:
   right: 0.9427
   bottom: 0.0833
 
+# builder base的右上角表示圣水资源的区域
 elixir_resource:
   type: rect
   left: 0.7896

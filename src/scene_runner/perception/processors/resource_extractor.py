@@ -5,7 +5,7 @@ from pathlib import Path
 import cv2
 import numpy as np
 
-from scene_runner.world_model.home_village import Resources
+from scene_runner.world_model.common import Resources
 
 ROOT = Path(__file__).resolve().parents[4]
 TMPL_DIR = ROOT / "data" / "resource" / "30_templates"
