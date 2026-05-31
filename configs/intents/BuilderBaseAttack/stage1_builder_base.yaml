@@ -11,3 +11,17 @@ army_training_button:
   top: 0.6898
   right: 0.0625
   bottom: 0.7593
+
+gold_resource:
+  type: rect
+  left: 0.7865
+  top: 0.037
+  right: 0.9427
+  bottom: 0.0833
+
+elixir_resource:
+  type: rect
+  left: 0.7896
+  top: 0.1296
+  right: 0.9427
+  bottom: 0.1778
