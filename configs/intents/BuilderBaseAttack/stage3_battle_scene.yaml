@@ -5,6 +5,14 @@ troop_bar:
   right: 1.0
   bottom: 1.0
 
+# 英雄的框的所在区域， X1, Y1 = 140, 900      # 左上角像素坐标， X2, Y2 = 255, 1000  # 右下角像素坐标
+hero:
+  type: rect
+  left: 0.0729
+  top: 0.8333
+  right: 0.1328
+  bottom: 0.9259
+
 night_witch:
   type: rect
   left: 0.1578
