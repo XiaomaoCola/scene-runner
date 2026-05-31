@@ -3,6 +3,7 @@ from __future__ import annotations
 import numpy as np
 
 from scene_runner.decision.states.BuilderBaseFsm import BuilderBaseFsm
+from scene_runner.world_model.builder_base import BuilderBase
 
 
 class Fsm:
@@ -14,8 +15,8 @@ class Fsm:
     也就是输出 intent 。
     """
 
-    def __init__(self) -> None:
-        self._builder_base_fsm = BuilderBaseFsm()
+    def __init__(self, builder_base: BuilderBase) -> None:
+        self._builder_base_fsm = BuilderBaseFsm(builder_base)
 
     def decide(self, frame_rgb: np.ndarray):
         # 留白：判定为在 BuilderBase，未来做模板匹配判断世界

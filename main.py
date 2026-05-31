@@ -12,7 +12,7 @@ _LOOP_INTERVAL = 1  # 每帧间隔（秒）
 def main() -> None:
     builder_base = BuilderBase()
     capture = AdbCapture()
-    fsm = Fsm()
+    fsm = Fsm(builder_base)
     planner = Planner(builder_base)
 
     # 先截一帧，用于初始化 Executor 的屏幕尺寸
