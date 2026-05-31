@@ -113,6 +113,20 @@ class BuilderBaseAttackPlan:
             ),
         }
 
+        _stage3_tmpl = _ROOT / "data/templates/builder_base/BuilderBaseAttackIntent/stage3_battle_scene"
+        self._hero_matchers: list[TemplateMatcher] = [
+            TemplateMatcher(
+                template_path=_stage3_tmpl / "stage3_battle_scene_battle_machine_region.png",
+                region=self._stage3_battle_scene_regions["hero"],
+                threshold=0.65,
+            ),
+            TemplateMatcher(
+                template_path=_stage3_tmpl / "stage3_battle_scene_battle_copter_region.png",
+                region=self._stage3_battle_scene_regions["hero"],
+                threshold=0.65,
+            ),
+        ]
+
     def _recover(self, frame_rgb: np.ndarray) -> None:
         best_stage: Stage | None = None
         best_score = 0.0
@@ -171,17 +185,36 @@ class BuilderBaseAttackPlan:
 
         if self.state == Stage.BATTLE_SCENE:
             self.to_surrender_confirm()
+            hero_scores = [m.score(frame_rgb) for m in self._hero_matchers]
+            has_hero = any(m.is_match(frame_rgb) for m in self._hero_matchers)
+            print(f"[bb_plan|BATTLE_SCENE] 英雄检测 battle_machine={hero_scores[0]:.3f} battle_copter={hero_scores[1]:.3f} → {'有' if has_hero else '无'}")
+
             actions: list[Action] = [
                 SwipeAction(from_position=(0.5, 0.8), to_position=(0.05, 0.05), duration_milliseconds=1500),
                 # 滑动到战斗界面的村庄的右下角，用于对齐坐标
                 RandomSleepAction(minimum_seconds=1.0, maximum_seconds=2.0),
+            ]
+
+            # 如果 has_hero， 那么就点击英雄并部署到 2，3，4 区域里。
+            if has_hero:
+                actions.append(RandomTapAction(region=self._stage3_battle_scene_regions["hero"]))  # 选中英雄
+                actions.append(RandomSleepAction(minimum_seconds=0.2, maximum_seconds=0.5))
+                for zone_key in ["deployment_zone_2", "deployment_zone_3", "deployment_zone_4"]:
+                    for _ in range(random.randint(1, 2)):
+                        actions.append(RandomTapAction(region=self._stage3_battle_scene_regions[zone_key]))
+                        actions.append(RandomSleepAction(minimum_seconds=0.1, maximum_seconds=0.3))
+                actions.append(RandomSleepAction(minimum_seconds=0.5, maximum_seconds=1.0))
+
+            actions += [
                 TapAction(region=self._stage3_battle_scene_regions["night_witch"]),  # 选中 night_witch
                 RandomSleepAction(minimum_seconds=0.2, maximum_seconds=1.0),
             ]
+
             for zone_key in ["deployment_zone_2", "deployment_zone_3", "deployment_zone_4"]:
                 for _ in range(random.randint(2, 5)):
                     actions.append(RandomTapAction(region=self._stage3_battle_scene_regions[zone_key]))
                     actions.append(RandomSleepAction(minimum_seconds=0.1, maximum_seconds=0.3))
+
             actions += [
                 RandomSleepAction(minimum_seconds=30, maximum_seconds=50),
                 # 等待军队进攻的时间，时间到了之后会直接投降
