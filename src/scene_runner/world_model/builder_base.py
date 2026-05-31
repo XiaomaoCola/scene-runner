@@ -1,1 +1,12 @@
+from __future__ import annotations
 
+from dataclasses import dataclass
+from typing import Optional
+
+from scene_runner.world_model.common import Resources
+
+
+@dataclass(slots=True)
+class BuilderBase:
+    """夜世界村庄的全局状态，整个运行时唯一实例。"""
+    resources: Optional[Resources] = None

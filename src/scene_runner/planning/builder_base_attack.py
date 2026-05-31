@@ -11,6 +11,8 @@ from transitions import Machine
 
 from scene_runner.actuation.actions import Action, TapAction, SwipeAction, RandomSleepAction, RandomTapAction
 from scene_runner.decision.template_matcher import TemplateMatcher
+from scene_runner.perception.processors.resource_extractor import ResourceExtractor
+from scene_runner.world_model.builder_base import BuilderBase
 
 _ROOT = Path(__file__).parents[3]
 _CONFIGS = _ROOT / "configs/intents/BuilderBaseAttack"
@@ -52,8 +54,16 @@ class BuilderBaseAttackPlan:
     追踪当前处于哪个 UI 阶段，做模板匹配，返回需要点击的区域。
     """
 
-    def __init__(self) -> None:
-        self._stage1_builder_base_regions      = _load_regions(_CONFIGS / "stage1_builder_base.yaml")
+    def __init__(self, builder_base: BuilderBase) -> None:
+        self._resource_extractor = ResourceExtractor()
+        self._builder_base = builder_base
+
+        with open(_CONFIGS / "stage1_builder_base.yaml", encoding="utf-8") as f:
+            self._stage1_raw_config = yaml.safe_load(f)
+        self._stage1_builder_base_regions = {
+            key: (elem["left"], elem["top"], elem["right"], elem["bottom"])
+            for key, elem in self._stage1_raw_config.items()
+        }
         self._stage2_attack_menu_regions       = _load_regions(_CONFIGS / "stage2_attack_menu.yaml")
         self._stage3_battle_scene_regions      = _load_regions(_CONFIGS / "stage3_battle_scene.yaml")
         self._stage4_surrender_confirm_regions = _load_regions(_CONFIGS / "stage4_surrender_confirm.yaml")
@@ -143,6 +153,9 @@ class BuilderBaseAttackPlan:
         self._consecutive_failures = 0
 
         if self.state == Stage.VILLAGE:
+            resources = self._resource_extractor.extract(frame_rgb, self._stage1_raw_config)
+            self._builder_base.resources = resources
+            print(f"[bb_plan|VILLAGE] 金币={resources.gold}  圣水={resources.elixir}")
             self.to_attack_menu()
             return [
                 TapAction(region=self._stage1_builder_base_regions["attack_button"]),  # 点击左下角的 Attack 按钮

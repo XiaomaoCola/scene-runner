@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from scene_runner.decision.states.builder_base_attack import BuilderBaseFsm
+from scene_runner.decision.states.BuilderBaseFsm import BuilderBaseFsm
 
 
 class Fsm:
@@ -15,9 +15,9 @@ class Fsm:
     """
 
     def __init__(self) -> None:
-        self._bb_attack = BuilderBaseFsm()
+        self._builder_base_fsm = BuilderBaseFsm()
 
     def decide(self, frame_rgb: np.ndarray):
         # 留白：判定为在 BuilderBase，未来做模板匹配判断世界
-        return self._bb_attack.step()
+        return self._builder_base_fsm.step()
 
