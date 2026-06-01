@@ -29,3 +29,12 @@ perception → decision → intents → planning → actuation
 ## 编码约定
 
 代码注释统一使用中文。
+
+## Git 提交规范
+
+Conventional Commits 格式，scope 用英文，描述用中文，示例如下：
+
+```
+fix(BuilderBaseAttackPlan): 当 resource-extractor 识别失败时返回 None，避免零值误判资源已满
+feat(BuilderBaseFsm): 新增资源阈值检测，低于上限时触发进攻
+```
