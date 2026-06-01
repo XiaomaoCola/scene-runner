@@ -16,7 +16,8 @@ class BuilderBaseFsm:
 
         # 任意一项资源后5位全是零，说明已打满金币或者圣水，暂时不需要进攻
         if resources is not None:
-            if resources.gold % 100000 == 0 or resources.elixir % 100000 == 0:
+            if (resources.gold > 0 and resources.gold % 100000 == 0) or \
+               (resources.elixir > 0 and resources.elixir % 100000 == 0):
                 print(f"[bb_fsm] 资源已满，跳过进攻 金币={resources.gold} 圣水={resources.elixir}")
                 return None
 

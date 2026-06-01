@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Optional
 
 import cv2
 import numpy as np
@@ -22,19 +23,22 @@ class ResourceExtractor:
             if p.stem.isdigit():
                 self._templates[p.stem] = cv2.imread(str(p), cv2.IMREAD_GRAYSCALE)
 
-    def extract(self, frame: np.ndarray, config: dict) -> Resources:
+    def extract(self, frame: np.ndarray, config: dict) -> Optional[Resources]:
         """
         frame: HxWxC uint8 RGB
         config: dict with gold_resource / elixir_resource normalized coords
+        任意一项识别失败时返回 None，调用方应保留上次有效值。
         """
         h, w = frame.shape[:2]
         gold   = self._read_region(frame, h, w, config["gold_resource"])
         elixir = self._read_region(frame, h, w, config["elixir_resource"])
+        if gold is None or elixir is None:
+            return None
         return Resources(gold=gold, elixir=elixir)
 
     # ------------------------------------------------------------------ #
 
-    def _read_region(self, frame: np.ndarray, h: int, w: int, roi: dict) -> int:
+    def _read_region(self, frame: np.ndarray, h: int, w: int, roi: dict) -> Optional[int]:
         crop = frame[
             int(roi["top"] * h): int(roi["bottom"] * h),
             int(roi["left"] * w): int(roi["right"] * w),
@@ -82,7 +86,7 @@ class ResourceExtractor:
     def _match_number(self, binary: np.ndarray, boxes: list) -> int:
         matches = self._match_digits(binary, boxes)
         valid = [d for d, s in matches if s >= 0.4]
-        return int("".join(valid)) if valid else 0
+        return int("".join(valid)) if valid else None
 
     def extract_verbose(self, frame: np.ndarray, config: dict) -> tuple[Resources, dict]:
         """同 extract，额外返回每个区域所有轮廓的识别分数，供调试用。"""

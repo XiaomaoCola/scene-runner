@@ -168,8 +168,11 @@ class BuilderBaseAttackPlan:
 
         if self.state == Stage.VILLAGE:
             resources = self._resource_extractor.extract(frame_rgb, self._stage1_raw_config)
-            self._builder_base.resources = resources
-            print(f"[bb_plan|VILLAGE] 金币={resources.gold}  圣水={resources.elixir}")
+            if resources is not None:
+                self._builder_base.resources = resources
+                print(f"[bb_plan|VILLAGE] 金币={resources.gold}  圣水={resources.elixir}")
+            else:
+                print(f"[bb_plan|VILLAGE] 资源识别失败，保留上次值 金币={self._builder_base.resources and self._builder_base.resources.gold}  圣水={self._builder_base.resources and self._builder_base.resources.elixir}")
             self.to_attack_menu()
             return [
                 TapAction(region=self._stage1_builder_base_regions["attack_button"]),  # 点击左下角的 Attack 按钮
