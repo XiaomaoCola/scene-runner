@@ -114,16 +114,20 @@ class BuilderBaseAttackPlan:
         }
 
         _stage3_tmpl = _ROOT / "data/templates/builder_base/BuilderBaseAttackIntent/stage3_battle_scene"
+        # 不同账号女巫数量不同，导致英雄槽位置左移数像素，固定 hero 区域会漏检。
+        # 改为在整个 troop_bar 内用 search 模式滑窗查找，位置偏移不再影响识别结果。
         self._hero_matchers: list[TemplateMatcher] = [
             TemplateMatcher(
                 template_path=_stage3_tmpl / "stage3_battle_scene_battle_machine_region.png",
-                region=self._stage3_battle_scene_regions["hero"],
+                region=self._stage3_battle_scene_regions["troop_bar"],
                 threshold=0.65,
+                mode="search",
             ),
             TemplateMatcher(
                 template_path=_stage3_tmpl / "stage3_battle_scene_battle_copter_region.png",
-                region=self._stage3_battle_scene_regions["hero"],
+                region=self._stage3_battle_scene_regions["troop_bar"],
                 threshold=0.65,
+                mode="search",
             ),
         ]
 
