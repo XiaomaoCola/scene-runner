@@ -180,14 +180,14 @@ class BuilderBaseAttackPlan:
             ]
 
         if self.state == Stage.ATTACK_MENU:
-            self.to_battle_scene()
-            return [
+            actions = [
                 TapAction(region=self._stage2_attack_menu_regions["find_match"]),  # 点击 Find Now! 那个按钮
                 RandomSleepAction(minimum_seconds=3.0, maximum_seconds=3.5),
             ]
+            self.to_battle_scene()
+            return actions
 
         if self.state == Stage.BATTLE_SCENE:
-            self.to_surrender_confirm()
             hero_scores = [m.score(frame_rgb) for m in self._hero_matchers]
             has_hero = any(m.is_match(frame_rgb) for m in self._hero_matchers)
             print(f"[bb_plan|BATTLE_SCENE] 英雄检测 battle_machine={hero_scores[0]:.3f} battle_copter={hero_scores[1]:.3f} → {'有' if has_hero else '无'}")
@@ -224,20 +224,23 @@ class BuilderBaseAttackPlan:
                 TapAction(region=self._stage3_battle_scene_regions["surrender_button"]),  # 点击 surrender_button
                 RandomSleepAction(minimum_seconds=1.5, maximum_seconds=2.5),
             ]
+            self.to_surrender_confirm()
             return actions
 
         if self.state == Stage.SURRENDER_CONFIRM:
-            self.to_return_home()
-            return [
+            actions = [
                 TapAction(region=self._stage4_surrender_confirm_regions["surrender_confirm_ok_button"]),  # 点击 surrender_confirm_ok_button
                 RandomSleepAction(minimum_seconds=2.5, maximum_seconds=3.0),
             ]
+            self.to_return_home()
+            return actions
 
         if self.state == Stage.RETURN_HOME:
-            self.to_village()
-            return [
+            actions = [
                 TapAction(region=self._stage5_return_home_regions["return_home_button"]),  # 点击 return_home_button
                 RandomSleepAction(minimum_seconds=1.5, maximum_seconds=2.5),
             ]
+            self.to_village()
+            return actions
 
         return None
