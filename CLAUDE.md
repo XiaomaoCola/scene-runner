@@ -1,6 +1,6 @@
 # scene-runner
 
-基于视觉的 Clash of Clans Builder Base 自动化框架。通过 PyTorch 分类游戏场景，FSM 驱动决策，ADB 执行点击/滑动操作，支持多设备并行。
+基于视觉的 Clash of Clans 自动化框架。
 
 ## 架构分层
 

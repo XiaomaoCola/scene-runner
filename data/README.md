@@ -12,9 +12,13 @@
 
 草稿区，随时可删，根目录的 `tools` 文件夹里的工具产出的内容一般进这个文件夹。
 
-# resource
+## resource
 
 在`30_templates`的文件夹里，有builder base的右上角资源的数字模板，用来识别builder base里右上角金币和圣水数量。
+
+## models
+
+这个文件夹里放训练好的模型。
 
 ## 未来补充
 
