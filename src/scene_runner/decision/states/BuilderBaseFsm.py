@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from scene_runner.intents.builder_base_attack import BuilderBaseAttackIntent
+from scene_runner.intents.builder_base_collect_resources import BuilderBaseCollectResourcesIntent
 from scene_runner.world_model.builder_base import BuilderBase
 
 
@@ -11,7 +12,12 @@ class BuilderBaseFsm:
     def __init__(self, builder_base: BuilderBase) -> None:
         self._builder_base = builder_base
 
-    def step(self) -> BuilderBaseAttackIntent | None:
+    def step(self) -> BuilderBaseAttackIntent | BuilderBaseCollectResourcesIntent | None:
+        # 每第八次循环开始collect resources，特殊情况是刚开始，即第0次也要收集资源一次。
+        if self._builder_base.loop_count % 8 == 0:
+            print(f"[bb_fsm] loop_count={self._builder_base.loop_count}，进入收集资源")
+            return BuilderBaseCollectResourcesIntent()
+
         resources = self._builder_base.resources
 
         # 任意一项资源后5位全是零，说明已打满金币或者圣水，暂时不需要进攻
