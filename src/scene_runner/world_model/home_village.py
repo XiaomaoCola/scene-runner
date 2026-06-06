@@ -25,6 +25,7 @@ class HomeVillage:
     # 元数据
     timestamp: float
     confidence: float = 1.0
+    loop_count: int = 0  # 累计完整循环次数
 
     @classmethod
     def now(

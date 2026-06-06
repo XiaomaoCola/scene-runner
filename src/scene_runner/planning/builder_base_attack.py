@@ -244,6 +244,8 @@ class BuilderBaseAttackPlan:
                 TapAction(region=self._stage5_return_home_regions["return_home_button"]),  # 点击 return_home_button
                 RandomSleepAction(minimum_seconds=1.5, maximum_seconds=2.5),
             ]
+            self._builder_base.loop_count += 1
+            print(f"[bb_plan|RETURN_HOME] 循环完成，累计 {self._builder_base.loop_count} 次")
             self.to_village()
             return actions
 
