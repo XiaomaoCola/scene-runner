@@ -1,0 +1,15 @@
+# 这是点击资源小车后，弹出框里的右下角的 collect 按钮。
+collect_button:
+  type: rect
+  left: 0.6797
+  top: 0.8102
+  right: 0.7917
+  bottom: 0.8796
+
+# 这是右上角红色 × 的按钮。
+close_window_button:
+  type: rect
+  left: 0.8255
+  top: 0.0787
+  right: 0.849
+  bottom: 0.1204
