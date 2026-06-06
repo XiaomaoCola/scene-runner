@@ -15,7 +15,7 @@ from scene_runner.world_model.builder_base import BuilderBase
 _ROOT = Path(__file__).parents[3]
 _MODEL_PATH = _ROOT / "data/models/builder_base/elixir_cart.pt"
 _CONFIGS = _ROOT / "configs/intents/BuilderBaseCollectResources"
-_TEMPLATES = _ROOT / "data/templates/builder_base/BuilderBaseCollectResources"
+_TEMPLATES = _ROOT / "data/templates/builder_base/BuilderBaseCollectResourcesPlan"
 _CONF_THRESHOLD = 0.7
 
 

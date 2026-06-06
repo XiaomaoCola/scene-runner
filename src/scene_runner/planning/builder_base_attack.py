@@ -91,29 +91,29 @@ class BuilderBaseAttackPlan:
 
         self._matchers: dict[Stage, TemplateMatcher] = {
             Stage.VILLAGE: TemplateMatcher(
-                template_path=_ROOT / "data/templates/builder_base/BuilderBaseAttackIntent/stage1_builder_base/stage1_builder_base_army_training_button_region.png",
+                template_path=_ROOT / "data/templates/builder_base/BuilderBaseAttackPlan/stage1_builder_base/stage1_builder_base_army_training_button_region.png",
                 region=self._stage1_builder_base_regions["army_training_button"],
             ),
             Stage.ATTACK_MENU: TemplateMatcher(
-                template_path=_ROOT / "data/templates/builder_base/BuilderBaseAttackIntent/stage2_attack_menu/stage2_attack_menu_find_match_region.png",
+                template_path=_ROOT / "data/templates/builder_base/BuilderBaseAttackPlan/stage2_attack_menu/stage2_attack_menu_find_match_region.png",
                 region=self._stage2_attack_menu_regions["find_match"],
             ),
             Stage.BATTLE_SCENE: TemplateMatcher(
-                template_path=_ROOT / "data/templates/builder_base/BuilderBaseAttackIntent/stage3_battle_scene/night_witch.png",
+                template_path=_ROOT / "data/templates/builder_base/BuilderBaseAttackPlan/stage3_battle_scene/night_witch.png",
                 region=self._stage3_battle_scene_regions["troop_bar"],
                 mode="search",
             ),
             Stage.SURRENDER_CONFIRM: TemplateMatcher(
-                template_path=_ROOT / "data/templates/builder_base/BuilderBaseAttackIntent/stage4_surrender_confirm/stage4_surrender_confirm_surrender_confirm_ok_button_region.png",
+                template_path=_ROOT / "data/templates/builder_base/BuilderBaseAttackPlan/stage4_surrender_confirm/stage4_surrender_confirm_surrender_confirm_ok_button_region.png",
                 region=self._stage4_surrender_confirm_regions["surrender_confirm_ok_button"],
             ),
             Stage.RETURN_HOME: TemplateMatcher(
-                template_path=_ROOT / "data/templates/builder_base/BuilderBaseAttackIntent/stage5_return_home/stage5_return_home_return_home_button_region.png",
+                template_path=_ROOT / "data/templates/builder_base/BuilderBaseAttackPlan/stage5_return_home/stage5_return_home_return_home_button_region.png",
                 region=self._stage5_return_home_regions["return_home_button"],
             ),
         }
 
-        _stage3_tmpl = _ROOT / "data/templates/builder_base/BuilderBaseAttackIntent/stage3_battle_scene"
+        _stage3_tmpl = _ROOT / "data/templates/builder_base/BuilderBaseAttackPlan/stage3_battle_scene"
         # 不同账号女巫数量不同，导致英雄槽位置左移数像素，固定 hero 区域会漏检。
         # 改为在整个 troop_bar 内用 search 模式滑窗查找，位置偏移不再影响识别结果。
         self._hero_matchers: list[TemplateMatcher] = [
