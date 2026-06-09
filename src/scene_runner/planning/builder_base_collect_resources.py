@@ -49,6 +49,10 @@ class BuilderBaseCollectResourcesPlan:
             region=self._stage3_regions["collect_button"],
         )
 
+        # stage1/2 是无条件跳转，出错只会卡在 stage3（matcher 对不上）。
+        # 连续失败 5 次视为本轮异常，强制推进 loop_count ，避免死循环。
+        self._stage3_fail_count = 0
+
         self.machine = Machine(
             model=self,
             states=Stage,
@@ -80,7 +84,9 @@ class BuilderBaseCollectResourcesPlan:
                     cls_name = self._model.names[int(box.cls.item())]
                     if cls_name != "elixir_cart":
                         continue
+                    conf = box.conf.item()
                     x1, y1, x2, y2 = box.xyxy[0].tolist()
+                    print(f"[bb_collect|CLICK_ELIXIR_CART] 圣水推车 #{cart_count + 1} conf={conf:.3f} box=({x1:.0f},{y1:.0f},{x2:.0f},{y2:.0f})")
                     region = (x1 / w, y1 / h, x2 / w, y2 / h)
                     actions.append(TapAction(region=region))
                     actions.append(RandomSleepAction(minimum_seconds=0.3, maximum_seconds=0.8))
@@ -94,8 +100,16 @@ class BuilderBaseCollectResourcesPlan:
             score = self._stage3_matcher.score(frame_rgb)
             print(f"[bb_collect|COLLECT_AND_RETURN_HOME] collect_button score={score:.3f}")
             if not self._stage3_matcher.is_match(frame_rgb):
+                self._stage3_fail_count += 1
+                print(f"[bb_collect|COLLECT_AND_RETURN_HOME] matcher 未命中，连续失败 {self._stage3_fail_count} 次")
+                if self._stage3_fail_count >= 5:
+                    self._stage3_fail_count = 0
+                    self._builder_base.loop_count += 1
+                    print(f"[bb_collect|COLLECT_AND_RETURN_HOME] 连续失败达上限，强制推进，累计 {self._builder_base.loop_count} 次")
+                    self.to_swipe_to_top_right()
                 return None
 
+            self._stage3_fail_count = 0
             self._builder_base.loop_count += 1
             print(f"[bb_collect|COLLECT_AND_RETURN_HOME] 循环完成，累计 {self._builder_base.loop_count} 次")
             self.to_swipe_to_top_right()
